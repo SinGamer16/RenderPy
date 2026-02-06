@@ -34,8 +34,8 @@ class RenderSystem:
         self.world = None
 
         self.object_shader = Shader(
-            "assets/shaders/object.vert",
-            "assets/shaders/object.frag"
+            "./assets/shaders/object.vert",
+            "./assets/shaders/object.frag"
         )
 
         self.skybox = Skybox()

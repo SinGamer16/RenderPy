@@ -38,13 +38,31 @@ def create_cube():
     ], dtype=np.float32)
 
     indices = np.array([
-         0,  1,  2,  2,  3,  0,
-         4,  5,  6,  6,  7,  4,
-         8,  9, 10, 10, 11,  8,
-        12, 13, 14, 14, 15, 12,
-        16, 17, 18, 18, 19, 16,
-        20, 21, 22, 22, 23, 20
-    ], dtype=np.uint32)
+    # BACK (-Z)
+     0,  2,  1,
+     0,  3,  2,
+
+    # FRONT (+Z)
+     4,  5,  6,
+     4,  6,  7,
+
+    # LEFT (-X)
+     8,  10, 9,
+     8, 11, 10,
+
+    # RIGHT (+X)
+    12, 13, 14,
+    12, 14, 15,
+
+    # BOTTOM (-Y)
+    16, 18, 17,
+    16, 19, 18,
+
+    # TOP (+Y)
+    20, 21, 22,
+    20, 22, 23,
+], dtype=np.uint32)
+
 
     vao = glGenVertexArrays(1)
     vbo = glGenBuffers(1)

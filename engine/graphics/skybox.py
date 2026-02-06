@@ -1,6 +1,6 @@
 from OpenGL.GL import *
 import pygame as pg
-from graphics.shader import Shader
+from graphics import Shader
 import numpy as np
 
 class Skybox:
