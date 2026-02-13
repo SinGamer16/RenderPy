@@ -1,7 +1,15 @@
 from OpenGL.GL import *
 import pygame as pg
-from graphics import Shader
+from .shader import Shader
 import numpy as np
+import os
+
+
+def _resolve_path(path: str) -> str:
+    if os.path.isabs(path):
+        return path
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.join(root, path)
 
 class Skybox:
     def __init__(self):
@@ -18,7 +26,8 @@ class Skybox:
         glBindTexture(GL_TEXTURE_CUBE_MAP, tex)
 
         for i, face in enumerate(faces):
-            img = pg.image.load(f"assets/skybox/{face}.png")
+            img_path = _resolve_path(f"assets/env/cubemap/{face}.png")
+            img = pg.image.load(img_path)
             data = pg.image.tostring(img, "RGB", True)
             w, h = img.get_size()
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i,

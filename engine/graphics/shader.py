@@ -1,9 +1,29 @@
 from OpenGL.GL import *
 import glm
+from OpenGL import GL as gl
+import numpy as np
+import os
+
+
+def _resolve_path(path: str) -> str:
+    """Resolve a possibly-relative path against the project root.
+
+    If `path` is absolute, return it unchanged. Otherwise assume it's relative to
+    the repository root (two directories above this file's parent) and return
+    the absolute path.
+    """
+    if os.path.isabs(path):
+        return path
+    # shader.py is in <root>/engine/graphics/shader.py -> root is three levels up
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.join(root, path)
 
 
 class Shader:
     def __init__(self, vs_path, fs_path):
+        vs_path = _resolve_path(vs_path)
+        fs_path = _resolve_path(fs_path)
+
         with open(vs_path, "r") as f:
             vs_source = f.read()
         with open(fs_path, "r") as f:
@@ -62,3 +82,44 @@ class Shader:
         loc = glGetUniformLocation(self.program, name)
         if loc != -1:
             glUniform1i(loc, value)
+
+
+# cubemap Renderer
+
+def _normalize(v):
+    v = np.array(v, dtype=np.float32)
+    n = np.linalg.norm(v)
+    if n == 0:
+        return v
+    return v / n
+
+
+def look_at(eye, center, up):
+    eye = np.array(eye, dtype=np.float32)
+    center = np.array(center, dtype=np.float32)
+    up = np.array(up, dtype=np.float32)
+
+    f = _normalize(center - eye)
+    s = _normalize(np.cross(f, up))
+    u = np.cross(s, f)
+
+    # Column-major (OpenGL)
+    M = np.identity(4, dtype=np.float32)
+    M[0, 0:3] = s
+    M[1, 0:3] = u
+    M[2, 0:3] = -f
+    T = np.identity(4, dtype=np.float32)
+    T[0:3, 3] = -eye
+    return M @ T
+
+
+def perspective(fovy_deg, aspect, near, far):
+    fovy = np.deg2rad(fovy_deg)
+    f = 1.0 / np.tan(fovy / 2.0)
+    M = np.zeros((4, 4), dtype=np.float32)
+    M[0, 0] = f / aspect
+    M[1, 1] = f
+    M[2, 2] = (far + near) / (near - far)
+    M[2, 3] = (2.0 * far * near) / (near - far)
+    M[3, 2] = -1.0
+    return M

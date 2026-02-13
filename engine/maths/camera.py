@@ -19,6 +19,17 @@ class Camera:
         if keys[pg.K_a]: self.position -= right * self.speed * dt
         if keys[pg.K_d]: self.position += right * self.speed * dt
 
+        if keys[pg.K_ESCAPE]:
+            if pg.mouse.get_visible:
+                pg.event.set_grab(False)
+                pg.mouse.set_visible(True)
+        if pg.MOUSEBUTTONDOWN:
+            if pg.mouse.get_visible == False:
+                pg.event.set_grab(True)
+                pg.mouse.set_visible(False)
+        
+
+
         mx, my = pg.mouse.get_rel()
         self.yaw += mx * self.sensitivity
         self.pitch -= my * self.sensitivity

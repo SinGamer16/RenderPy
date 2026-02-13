@@ -1,15 +1,14 @@
 from OpenGL.GL import *
 import glm
 
-from ecs.components import (
+from ecs import (
     Transform,
     CameraComponent,
     MeshRenderer,
     DirectionalLight
 )
 
-from graphics.shader import Shader
-from graphics.skybox import Skybox
+from graphics import Shader, Skybox
 
 
 # =========================================================
